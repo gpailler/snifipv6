@@ -1,5 +1,5 @@
-FROM alpine:latest
-MAINTAINER Gregoire Pailler <gregoire@pailler.fr>
+FROM armhf/alpine:latest
+LABEL Gregoire Pailler <gregoire@pailler.fr>
 
 VOLUME  [ "/data/in", "/data/out" ]
 RUN apk add --no-cache tcpdump bash
