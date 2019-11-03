@@ -1,4 +1,11 @@
-FROM amd64/alpine:latest
+# see hooks/build and hooks/.config
+ARG BASE_IMAGE_PREFIX
+FROM ${BASE_IMAGE_PREFIX}alpine:latest
+
+# see hooks/post_checkout
+ARG ARCH
+COPY qemu-${ARCH}-static /usr/bin
+
 LABEL MAINTAINER="Gregoire Pailler <gregoire@pailler.fr>"
 
 VOLUME  [ "/data/in", "/data/out" ]
