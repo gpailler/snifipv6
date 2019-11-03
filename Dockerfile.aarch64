@@ -1,4 +1,5 @@
-FROM armhf/alpine:latest
+FROM arm64v8/alpine:latest
+COPY qemu-aarch64-static /usr/bin/
 LABEL MAINTAINER="Gregoire Pailler <gregoire@pailler.fr>"
 
 VOLUME  [ "/data/in", "/data/out" ]
