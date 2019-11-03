@@ -8,3 +8,33 @@
 snifIPv6 is a simple script to map IPv6 addresses to hostnames by listening Neighbor Solicitation messages
 
 Check https://gpailler.github.io/2019-10-13-pi4-part4/ for details
+
+Usage
+```
+$ docker run -d \
+             -v ${PWD}/data/:/data/out/ \
+             -v /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro \
+             --net=host \
+             gpailler/snifipv6
+```
+
+Using Compose
+```
+version: "3"
+
+services:
+  snifipv6:
+    container_name: snifipv6
+    image: gpailler/snifipv6:latest
+    volumes:
+      - ./data/:/data/out/
+      - /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro
+    network_mode: host
+    restart: unless-stopped
+```
+
+Dnsmasq configuration
+```
+$ echo "hostsdir=${PWD}/data/" | sudo tee -a /etc/dnsmasq.d/ipv6-hostdir.conf
+$ sudo systemctl restart dnsmasq
+```
