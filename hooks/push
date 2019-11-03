@@ -12,19 +12,26 @@ for arch in ${build_architectures[@]}; do
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   echo
   docker push ${DOCKER_REPO}:${DOCKER_TAG}-${arch}
+
+  echo "✅ Pushing ${DOCKER_REPO}:latest-${arch}"
+  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  echo
+  docker tag ${DOCKER_REPO}:${DOCKER_TAG}-${arch} ${DOCKER_REPO}:latest-${arch}
+  docker push ${DOCKER_REPO}:latest-${arch}
 done
 
-
-# 2. build and push manifest
-DOCKER_REPO="index.docker.io/${DOCKER_REPO}"
-manifests=""
-
-for arch in ${build_architectures[@]}; do
-  manifests="${manifests} ${DOCKER_REPO}:${DOCKER_TAG}-${arch}"
-done
 
 TAGS=(${DOCKER_TAG} latest)
 for CURRENT_TAG in ${TAGS[@]}; do
+
+  # 2. build and push manifest
+  DOCKER_REPO="index.docker.io/${DOCKER_REPO}"
+  manifests=""
+
+  for arch in ${build_architectures[@]}; do
+    manifests="${manifests} ${DOCKER_REPO}:${CURRENT_TAG}-${arch}"
+  done
+
   echo "✅ Creating manifest ${DOCKER_REPO}:${CURRENT_TAG}"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   docker manifest create ${DOCKER_REPO}:${CURRENT_TAG} \
