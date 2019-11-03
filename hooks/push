@@ -20,12 +20,12 @@ for arch in ${build_architectures[@]}; do
   docker push ${DOCKER_REPO}:latest-${arch}
 done
 
+# 2. build and push manifest
+DOCKER_REPO="index.docker.io/${DOCKER_REPO}"
 
 TAGS=(${DOCKER_TAG} latest)
 for CURRENT_TAG in ${TAGS[@]}; do
 
-  # 2. build and push manifest
-  DOCKER_REPO="index.docker.io/${DOCKER_REPO}"
   manifests=""
 
   for arch in ${build_architectures[@]}; do
@@ -50,6 +50,11 @@ for CURRENT_TAG in ${TAGS[@]}; do
   echo "✅ Inspecting manifest ${DOCKER_REPO}:${CURRENT_TAG}"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   docker manifest inspect ${DOCKER_REPO}:${CURRENT_TAG}
+  echo
+
+  echo "✅ Pushing manifest ${DOCKER_REPO}:${CURRENT_TAG}"
+  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  docker manifest push --purge ${DOCKER_REPO}:${CURRENT_TAG}
   echo
 done
 
