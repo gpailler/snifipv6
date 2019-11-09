@@ -5,7 +5,7 @@ services:
     container_name: snifipv6
     image: gpailler/snifipv6:latest
     volumes:
-      - ./data/:/data/out/
+      - ./hosts/:/data/out/
       - /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro
     network_mode: host
     restart: unless-stopped
