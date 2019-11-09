@@ -12,7 +12,7 @@ Check https://gpailler.github.io/2019-10-13-pi4-part4/ for details
 Usage
 ```
 $ docker run -d \
-             -v ${PWD}/data/:/data/out/ \
+             -v ${PWD}/hosts/:/data/out/ \
              -v /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro \
              --net=host \
              gpailler/snifipv6
@@ -27,7 +27,7 @@ services:
     container_name: snifipv6
     image: gpailler/snifipv6:latest
     volumes:
-      - ./data/:/data/out/
+      - ./hosts/:/data/out/
       - /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro
     network_mode: host
     restart: unless-stopped
@@ -35,6 +35,6 @@ services:
 
 Dnsmasq configuration
 ```
-$ echo "hostsdir=${PWD}/data/" | sudo tee -a /etc/dnsmasq.d/ipv6-hostdir.conf
+$ echo "hostsdir=${PWD}/hosts" | sudo tee -a /etc/dnsmasq.d/ipv6-hostdir.conf
 $ sudo systemctl restart dnsmasq
 ```
