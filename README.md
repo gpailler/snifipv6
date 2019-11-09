@@ -38,3 +38,8 @@ Dnsmasq configuration
 $ echo "hostsdir=${PWD}/hosts" | sudo tee -a /etc/dnsmasq.d/ipv6-hostdir.conf
 $ sudo systemctl restart dnsmasq
 ```
+
+Cron task executed once a month to remove files older than 30 days
+```
+4 4 1 * * sudo find [FULLPATH_TO_HOSTS_FOLDER]/* -mtime +30 -delete && sudo systemctl restart dnsmasq
+```
