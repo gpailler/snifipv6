@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DNSMASQ_LEASES=$1
-HOSTS=$2
+HOSTS_DIR=$2
 WAIT=3
 
 if !([ -p /dev/stdin ]); then
@@ -14,13 +14,13 @@ if !([ -r ${DNSMASQ_LEASES} ]); then
   exit -1
 fi
 
-touch ${HOSTS} > /dev/null 2>&1
-if !([ -w ${HOSTS} ]); then
-  echo "Output file ${HOSTS} is not writeable"
+mkdir -p ${HOSTS_DIR} > /dev/null 2>&1
+if !([ -w ${HOSTS_DIR} ]); then
+  echo "Output directory ${HOSTS_DIR} is not writeable"
   exit -1
 fi
 
-echo "Using source '${DNSMASQ_LEASES}' and output '${HOSTS}'"
+echo "Using source '${DNSMASQ_LEASES}' and output '${HOSTS_DIR}'"
 
 while read LINE; do
   echo "Received packet: ${LINE}"
@@ -49,15 +49,14 @@ while read LINE; do
 
   echo "Found matching hostname: ${HOSTNAME}"
   DATE=$(date --utc +%FT%TZ)
-  LEASE_LINE="${IPV6} ${HOSTNAME}-6"
-  LEASE_LINE_DATE="${LEASE_LINE} # ${DATE}"
+  LEASE_LINE="${IPV6} ${HOSTNAME}-6 # ${DATE}"
+  LEASE_FILE="${HOSTNAME}-6_${IPV6}"
+  LEASE_FULLPATH="${HOSTS_DIR}/${LEASE_FILE}"
 
-  LEASE_EXIST=$(grep -E "${LEASE_LINE}" ${HOSTS})
-  if [ $? -eq 0 ]; then
-    echo -e "Updating lease\n"
-    sed -Ei "s/${LEASE_LINE}.+$/${LEASE_LINE_DATE}/g" ${HOSTS}
+  if [ -f "${LEASE_FULLPATH}" ]; then
+    echo -e "Existing lease file '${LEASE_FULLPATH}'\n"
   else
-    echo -e "Adding lease\n"
-    echo "${LEASE_LINE_DATE}" >> ${HOSTS}
+    echo -e "Adding lease file '${LEASE_FULLPATH}'\n"
+    echo ${LEASE_LINE} > ${LEASE_FULLPATH}
   fi
 done
