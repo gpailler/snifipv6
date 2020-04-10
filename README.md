@@ -26,6 +26,8 @@ services:
   snifipv6:
     container_name: snifipv6
     image: gpailler/snifipv6:latest
+    environment:
+      - INTERFACE=eno1
     volumes:
       - ./hosts/:/data/out/
       - /var/lib/misc/dnsmasq.leases:/data/in/leases_source:ro
